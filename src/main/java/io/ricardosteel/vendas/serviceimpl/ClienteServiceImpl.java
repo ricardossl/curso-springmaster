@@ -31,24 +31,19 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public void deleteClient(Integer id) {
-		Optional<Cliente> cliente = getClienteById(id);
-		if (!cliente.isPresent()) {
-			throw new RegraNegocioException("Cliente não encontrado para o id informado");
-		}
-
-		repository.delete(cliente.get());
+		getClienteById(id).map(cliente -> {
+			repository.delete(cliente);
+			return Void.TYPE;
+		}).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado"));
 	}
 
 	@Override
-	public Cliente updateCliente(Cliente clienteAtualizado, Integer id) {
-		Optional<Cliente> cliente = getClienteById(id);
-		if (!cliente.isPresent()) {
-			throw new RegraNegocioException("Cliente não encontrado para o id informado");
-		}
+	public void updateCliente(Cliente clienteAtualizado, Integer id) {
+		getClienteById(id).map(cliente -> {
+			clienteAtualizado.setId(cliente.getId());
 
-		clienteAtualizado.setId(cliente.get().getId());
-
-		return repository.save(clienteAtualizado);
+			return repository.save(clienteAtualizado);
+		}).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado"));
 	}
 
 	@Override

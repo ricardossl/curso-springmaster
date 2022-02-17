@@ -1,6 +1,6 @@
 package io.ricardosteel.vendas.domain.entity;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -24,7 +24,7 @@ public class Produto {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	private String descricao;
-	private BigInteger preco;
+	private BigDecimal preco;
 
 	@OneToMany(mappedBy = "produto")
 	private List<ItemPedido> itensPedido;

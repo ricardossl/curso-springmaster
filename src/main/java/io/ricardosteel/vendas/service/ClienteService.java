@@ -12,7 +12,7 @@ public interface ClienteService {
 	
 	void deleteClient(Integer id);
 	
-	Cliente updateCliente(Cliente clienteAtualizado, Integer id);
+	void updateCliente(Cliente clienteAtualizado, Integer id);
 	
 	List<Cliente> findCliente(Cliente filtro);
 }
