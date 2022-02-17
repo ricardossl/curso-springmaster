@@ -1,7 +1,11 @@
 package io.ricardosteel.vendas.serviceimpl;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 
 import io.ricardosteel.vendas.domain.entity.Cliente;
@@ -45,6 +49,16 @@ public class ClienteServiceImpl implements ClienteService {
 		clienteAtualizado.setId(cliente.get().getId());
 
 		return repository.save(clienteAtualizado);
+	}
+
+	@Override
+	public List<Cliente> findCliente(Cliente filtro) {
+		ExampleMatcher exampleMatcher = ExampleMatcher.matching().withIgnoreCase()
+				.withStringMatcher(StringMatcher.CONTAINING);
+
+		Example<Cliente> example = Example.of(filtro, exampleMatcher);
+
+		return repository.findAll(example);
 	}
 
 }

@@ -1,5 +1,6 @@
 package io.ricardosteel.vendas.rest.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -62,5 +63,15 @@ public class ClienteController {
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
+	}
+
+	@GetMapping
+	public ResponseEntity<List<Cliente>> find(Cliente filtro) {
+		List<Cliente> clientes = service.findCliente(filtro);
+
+		if (clientes.isEmpty())
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+		return ResponseEntity.ok(clientes);
 	}
 }
