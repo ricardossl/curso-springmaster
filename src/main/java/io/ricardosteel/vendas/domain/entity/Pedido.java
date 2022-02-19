@@ -46,5 +46,5 @@ public class Pedido {
 
 	@OneToMany(mappedBy = "pedido")
 	@Cascade(CascadeType.PERSIST)
-	private List<ItemPedido> itensPedido;
+	private List<ItemPedido> itens;
 }

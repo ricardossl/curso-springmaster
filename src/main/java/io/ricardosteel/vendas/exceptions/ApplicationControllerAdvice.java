@@ -16,7 +16,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.WebUtils;
 
 @ControllerAdvice
-public class ControllerAdvisor {
+public class ApplicationControllerAdvice {
 
 	@ExceptionHandler({ RegraNegocioException.class, MethodArgumentNotValidException.class })
 	public final ResponseEntity<Object> handleException(Exception ex, WebRequest request) {
