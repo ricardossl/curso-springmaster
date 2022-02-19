@@ -49,7 +49,7 @@ public class ClienteController {
 	}
 
 	@GetMapping
-	public List<Cliente> find(@RequestBody Cliente filtro) {
+	public List<Cliente> find(Cliente filtro) {
 		return service.findCliente(filtro);
 	}
 }

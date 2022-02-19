@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/produtos")
 @RequiredArgsConstructor
-public class ProdutoControler {
+public class ProdutoController {
 	private final ProdutoService service;
 
 	@GetMapping("{id}")
@@ -57,14 +57,14 @@ public class ProdutoControler {
 	public ResponseEntity<Object> delete(@PathVariable Integer id) {
 		try {
 			service.deleteProduto(id);
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok().build();
 		} catch (RegraNegocioException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Produto>> findProdutoFilter(@RequestBody Produto produto) {
+	public ResponseEntity<List<Produto>> findProdutoFilter(Produto produto) {
 		return ResponseEntity.ok(service.findProdutosFilter(produto));
 	}
 }
