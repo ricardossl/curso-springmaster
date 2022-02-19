@@ -20,8 +20,9 @@ public class ClienteServiceImpl implements ClienteService {
 	private final ClienteRepository repository;
 
 	@Override
-	public Optional<Cliente> getClienteById(Integer id) {
-		return repository.findById(id);
+	public Cliente getClienteById(Integer id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado"));
 	}
 
 	@Override
@@ -31,19 +32,19 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public void deleteClient(Integer id) {
-		getClienteById(id).map(cliente -> {
+		getClienteByIdOptional(id).map(cliente -> {
 			repository.delete(cliente);
 			return Void.TYPE;
-		}).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado"));
+		}).orElseThrow(() -> new RegraNegocioException("Não foi possível deletar o cliente"));
 	}
 
 	@Override
 	public void updateCliente(Cliente clienteAtualizado, Integer id) {
-		getClienteById(id).map(cliente -> {
+		getClienteByIdOptional(id).map(cliente -> {
 			clienteAtualizado.setId(cliente.getId());
 
 			return repository.save(clienteAtualizado);
-		}).orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado"));
+		}).orElseThrow(() -> new RegraNegocioException("Não foi possível atualizar o cliente"));
 	}
 
 	@Override
@@ -54,6 +55,12 @@ public class ClienteServiceImpl implements ClienteService {
 		Example<Cliente> example = Example.of(filtro, exampleMatcher);
 
 		return repository.findAll(example);
+	}
+
+	@Override
+	public Optional<Cliente> getClienteByIdOptional(Integer id) {
+		return Optional.of(repository.findById(id)
+				.orElseThrow(() -> new RegraNegocioException("Cliente não encontrado para o id informado")));
 	}
 
 }

@@ -2,6 +2,8 @@ package io.ricardosteel.vendas.rest.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import io.ricardosteel.vendas.domain.entity.Cliente;
 import io.ricardosteel.vendas.service.ClienteService;
@@ -26,13 +27,12 @@ public class ClienteController {
 
 	@GetMapping("/{id}")
 	public Cliente getClientById(@PathVariable Integer id) {
-		return service.getClienteById(id)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+		return service.getClienteById(id);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void saveCliente(@RequestBody Cliente cliente) {
+	public void saveCliente(@RequestBody @Valid Cliente cliente) {
 		service.saveCliente(cliente);
 	}
 
@@ -44,7 +44,7 @@ public class ClienteController {
 
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void update(@RequestBody Cliente clienteAtualizado, @PathVariable Integer id) {
+	public void update(@RequestBody @Valid Cliente clienteAtualizado, @PathVariable Integer id) {
 		service.updateCliente(clienteAtualizado, id);
 	}
 
