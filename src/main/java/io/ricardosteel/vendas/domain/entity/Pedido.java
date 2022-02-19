@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import io.ricardosteel.vendas.domain.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,6 +46,9 @@ public class Pedido {
 	@Column(precision = 20, scale = 2)
 	@NotNull(message = "{campo.total.obrigatorio}")
 	private BigDecimal total;
+
+	@Enumerated(EnumType.STRING)
+	private StatusPedido statusPedido;
 
 	@OneToMany(mappedBy = "pedido")
 	@Cascade(CascadeType.PERSIST)

@@ -18,15 +18,21 @@ import org.springframework.web.util.WebUtils;
 @ControllerAdvice
 public class ApplicationControllerAdvice {
 
-	@ExceptionHandler({ RegraNegocioException.class, MethodArgumentNotValidException.class })
+	@ExceptionHandler({ RegraNegocioException.class, MethodArgumentNotValidException.class,
+			RegistroNaoEncontradoException.class })
 	public final ResponseEntity<Object> handleException(Exception ex, WebRequest request) {
 		HttpHeaders headers = new HttpHeaders();
 
 		if (ex instanceof RegraNegocioException) {
-			HttpStatus status = HttpStatus.NOT_FOUND;
+			HttpStatus status = HttpStatus.BAD_REQUEST;
 			RegraNegocioException unfe = (RegraNegocioException) ex;
 
 			return handleRegraNegocioException(unfe, headers, status, request);
+		} else if (ex instanceof RegistroNaoEncontradoException) {
+			HttpStatus status = HttpStatus.NOT_FOUND;
+			RegistroNaoEncontradoException rnee = (RegistroNaoEncontradoException) ex;
+
+			return handleRegistroNaoEncontradoException(rnee, headers, status, request);
 		} else if (ex instanceof MethodArgumentNotValidException) {
 			HttpStatus status = HttpStatus.BAD_REQUEST;
 			MethodArgumentNotValidException manve = (MethodArgumentNotValidException) ex;
@@ -36,6 +42,16 @@ public class ApplicationControllerAdvice {
 			HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 			return handleExceptionInternal(ex, null, headers, status, request);
 		}
+	}
+
+	/** Customize the response for RegraNegocioException. */
+	protected ResponseEntity<Object> handleRegistroNaoEncontradoException(RegistroNaoEncontradoException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("message", ex.getMessage());
+
+		return handleExceptionInternal(ex, body, headers, status, request);
 	}
 
 	/** Customize the response for RegraNegocioException. */
