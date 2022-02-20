@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import io.ricardosteel.vendas.validation.NotEmptyList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,6 @@ public class PedidoDTO {
 	@NotNull(message = "{campo.total.obrigatorio}")
 	private BigDecimal total;
 
-	@NotNull(message = "{campo.itens.obrigatorio}")
+	@NotEmptyList(message = "{campo.itens.obrigatorio}")
 	private List<ItemPedidoDTO> itens;
 }

@@ -3,6 +3,8 @@ package io.ricardosteel.vendas.rest.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +38,7 @@ public class ProdutoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> save(@RequestBody Produto produto) {
+	public ResponseEntity<Object> save(@RequestBody @Valid Produto produto) {
 		try {
 			return ResponseEntity.ok(service.saveProduto(produto));
 		} catch (RegraNegocioException e) {
@@ -45,7 +47,7 @@ public class ProdutoController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<Object> update(@RequestBody Produto produto, @PathVariable Integer id) {
+	public ResponseEntity<Object> update(@RequestBody @Valid Produto produto, @PathVariable Integer id) {
 		try {
 			return ResponseEntity.ok(service.updateProduto(produto, id));
 		} catch (RegraNegocioException e) {

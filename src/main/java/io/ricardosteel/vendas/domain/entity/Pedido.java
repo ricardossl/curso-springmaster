@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -40,11 +39,9 @@ public class Pedido {
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
 
-	@NotNull(message = "{campo.data.obrigatorio}")
 	private LocalDate dataPedido;
 
 	@Column(precision = 20, scale = 2)
-	@NotNull(message = "{campo.total.obrigatorio}")
 	private BigDecimal total;
 
 	@Enumerated(EnumType.STRING)
