@@ -1,29 +1,36 @@
 package io.ricardosteel.vendas.serviceimpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import io.ricardosteel.vendas.domain.entity.Usuario;
+import io.ricardosteel.vendas.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UserDetailsService {
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+	private final BCryptPasswordEncoder passwordEncoder;
+	private final UsuarioRepository repository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		if (!username.equals("cicrano")) {
-			throw new UsernameNotFoundException("Usuário não encontrado na base");
-		}
+		Usuario usuario = repository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
 
-		return User.builder().username("cicrano").password(passwordEncoder.encode("123")).roles("USER", "ADMIN")
-				.build();
+		String[] roles = usuario.isAdmin() ? new String[] { "ADMIN", "USER" } : new String[] { "USER" };
+
+		return User.builder().username(usuario.getUsername()).password(usuario.getPassword()).roles(roles).build();
+	}
+
+	@Transactional
+	public Usuario save(Usuario usuario) {
+		return repository.save(usuario);
 	}
 
 }
