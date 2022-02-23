@@ -17,15 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.ricardosteel.vendas.domain.entity.Cliente;
 import io.ricardosteel.vendas.service.ClienteService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor
+@Api("API Clientes")
 public class ClienteController {
 	private final ClienteService service;
 
 	@GetMapping("/{id}")
+	@ApiOperation("Obter um detalhe de um cliente")
+	@ApiResponses({ @ApiResponse(code = 200, message = "Cliente encontrado"),
+			@ApiResponse(code = 400, message = "Cliente não encontrado para o ID informado") })
 	public Cliente getClientById(@PathVariable Integer id) {
 		return service.getClienteById(id);
 	}
