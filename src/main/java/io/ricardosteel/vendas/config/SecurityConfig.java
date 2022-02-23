@@ -1,12 +1,18 @@
 package io.ricardosteel.vendas.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.ricardosteel.vendas.security.jwt.JwtAuthFilter;
+import io.ricardosteel.vendas.security.jwt.JwtService;
 import io.ricardosteel.vendas.serviceimpl.UsuarioServiceImpl;
 import lombok.RequiredArgsConstructor;
 
@@ -14,10 +20,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final UsuarioServiceImpl usuarioServiceImpl;
+	private final JwtService jwtService;
 	private final BCryptPasswordEncoder passwordEncoder;
 
 	private static final String ADMIN = "ADMIN";
 
+	@Bean
+	public OncePerRequestFilter jwtFilter() {
+		return new JwtAuthFilter(jwtService, usuarioServiceImpl);
+	}
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		auth.inMemoryAuthentication().passwordEncoder(encoder()).withUser("fulano").password(encoder().encode("123"))
@@ -35,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/pedidos/**").hasAnyRole("USER", ADMIN)
 			.antMatchers(HttpMethod.POST, "/api/usuarios/**").permitAll()
 			.anyRequest().authenticated()
-		.and().httpBasic();
+		.and().sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.ricardosteel.vendas.domain.entity.Usuario;
 import io.ricardosteel.vendas.domain.repository.UsuarioRepository;
+import io.ricardosteel.vendas.exceptions.SenhaInvalidaException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,6 +18,16 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioServiceImpl implements UserDetailsService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final UsuarioRepository repository;
+
+	public UserDetails autenticate(Usuario usuario) {
+		UserDetails user = loadUserByUsername(usuario.getUsername());
+		boolean passwordValid = passwordEncoder.matches(usuario.getPassword(), user.getPassword());
+
+		if (passwordValid)
+			return user;
+
+		throw new SenhaInvalidaException();
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
